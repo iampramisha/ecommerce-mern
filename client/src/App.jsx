@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AuthLayout from './components/auth/layout'
 import AuthRegister from './pages/auth/register'
 import AuthLogin from './pages/auth/login'
@@ -16,14 +16,18 @@ import ShoppingCheckout from './pages/shopping-view/checkout'
 import ShoppingListing from './pages/shopping-view/listing'
 import CheckAuth from './components/common/check-auth'
 import UnauthPage from './pages/unauth'
+import { useDispatch, useSelector } from 'react-redux'
+import { checkAuth } from './store/auth-slice'
 
 
 export default function App() {
-  const isAuthenticated=false;
-  const user={
-    name:"Pramisha",
-    role:"user",
-  }
+
+  const {user,isAuthenticated}=useSelector(state=> state.auth);
+  console.log({user,isAuthenticated})
+  const dispatch=useDispatch();
+  useEffect(()=>{
+    dispatch(checkAuth());
+  },[dispatch])
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <h1>header</h1>

@@ -22,27 +22,105 @@ export const registerUser=createAsyncThunk('/auth/register',
 )
 //to store this sdata, we use extraREducers below
 
+export const loginUser=createAsyncThunk('/auth/login',
+    //username,email,password
+    async(formData)=>{
+        const response=await axios.post('http://localhost:5000/api/auth/login',formData,{
+            withCredentials:true
+        });
+        return response.data;
+    }
+)
+
+
+export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/auth/check-auth', {
+            withCredentials: true,
+            headers: {
+                'Cache-Control': 'no-store, no-cache',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        // Handle errors here if needed
+        throw error;
+    }
+});
 const authSlice=createSlice({
     name:'auth',
     initialState,
     reducers:{
         setUser:(state,action)=>{
-
-        },
+        }
+    },
         extraReducers:(builder)=>{
-            builder.addcase(registerUser.pending,(state)=>{
+            builder.addCase(registerUser.pending,(state)=>{
                 state.isLoading=true
-            }).addcase(registerUser.fulfilled,(state,action)=>{
+            }).addCase(registerUser.fulfilled,(state,action)=>{
                state.isLoading=false ;
                state.user=null;
                state.isAuthenticated=false
-            }).addcase(registerUser.rejected,(state,action)=>{
+            }).addCase(registerUser.rejected,(state,action)=>{
                 state.isLoading=false ;
                 state.user=null;
                 state.isAuthenticated=false
              });
+             builder
+             .addCase(loginUser.pending, (state) => {
+               state.isLoading = true;
+               state.isError = false;
+               state.errorMessage = '';
+             })
+             .addCase(loginUser.fulfilled, (state, action) => {
+                console.log('Login fulfilled payload:', action.payload); // Log payload
+                console.log('Action:', action); // Log entire action object
+            if (action.payload.success) {
+                state.user = action.payload.user; // Store user data from response
+                state.isAuthenticated = true;
+              } else {
+                state.user = null;
+                state.isAuthenticated = false;
+              }
+            })
+             .addCase(loginUser.rejected, (state, action) => {
+                console.log('Login rejected:', action.error.message);
+                state.isLoading = false;
+               state.isError = true;
+               state.errorMessage = action.error.message; // Store error message
+               state.user = null;
+               state.isAuthenticated = false;
+             });
+             builder
+             .addCase(checkAuth.pending, (state) => {
+               state.isLoading = true;
+               state.isError = false;
+               state.errorMessage = '';
+             })
+             .addCase(checkAuth.fulfilled, (state, action) => {
+                console.log('Login fulfilled payload:', action.payload); // Log payload
+                console.log('Action:', action); // Log entire action object
+            if (action.payload.success) {
+                state.user = action.payload.user; // Store user data from response
+                state.isAuthenticated = true;
+              } else {
+                state.user = null;
+                state.isAuthenticated = false;
+              }
+            })
+             .addCase(checkAuth.rejected, (state, action) => {
+                console.log('Login rejected:', action.error.message);
+                state.isLoading = false;
+               state.isError = true;
+               state.errorMessage = action.error.message; // Store error message
+               state.user = null;
+               state.isAuthenticated = false;
+             });
         }
     }
-})
+)
+
 export const {setUser}=authSlice.actions;
 export default authSlice.reducer;
