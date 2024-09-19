@@ -6,6 +6,7 @@ const cookieParser=require('cookie-parser');
 const cors=require('cors');
 
 const authRouter=require('./routes/auth/auth-routes')
+const adminProductsRouter=require('./routes/admin/products-route')
 console.log('MongoDB URI:', process.env.DATABASE_URL);
 mongoose.connect(process.env.DATABASE_URL)
 .then(() => console.log('Connected to MongoDB'))
@@ -36,4 +37,5 @@ app.use(express.json());
 //and wheenevr we go to authRouter  and / register call registerUser
 
 app.use('/api/auth', authRouter)
+app.use('/api/admin/products', adminProductsRouter)
 app.listen(PORT,()=>console.log(`server is running on port  ${PORT}`))

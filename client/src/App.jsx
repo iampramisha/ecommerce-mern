@@ -18,19 +18,28 @@ import CheckAuth from './components/common/check-auth'
 import UnauthPage from './pages/unauth'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth } from './store/auth-slice'
+import { Skeleton } from "@/components/ui/skeleton"
 
 
 export default function App() {
 
-  const {user,isAuthenticated}=useSelector(state=> state.auth);
-  console.log({user,isAuthenticated})
+  const {user,isAuthenticated,isLoading}=useSelector(state=> state.auth);
+
   const dispatch=useDispatch();
   useEffect(()=>{
     dispatch(checkAuth());
   },[dispatch])
+
+
+  if (isLoading) 
+    return <div><Skeleton className="w-[800px] bg-black h-[60px]" />
+
+</div>;
+  
+  console.log({user,isAuthenticated})
   return (
     <div className="flex flex-col overflow-hidden bg-white">
-      <h1>header</h1>
+      {/* <h1>header</h1> */}
       <Routes>
         {/* Authentication routes */}
         <Route path='/auth' element={<AuthLayout />}>

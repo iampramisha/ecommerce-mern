@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const initialState={
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: true,
     user:null
 }
 //When you use createAsyncThunk, it automatically generates action creators for the three action states (pending, fulfilled, rejected) and manages their lifecycle.
@@ -76,6 +76,7 @@ const authSlice=createSlice({
              })
              .addCase(loginUser.fulfilled, (state, action) => {
                 console.log('Login fulfilled payload:', action.payload); // Log payload
+                state.isLoading=false ;
                 console.log('Action:', action); // Log entire action object
             if (action.payload.success) {
                 state.user = action.payload.user; // Store user data from response
@@ -102,6 +103,7 @@ const authSlice=createSlice({
              .addCase(checkAuth.fulfilled, (state, action) => {
                 console.log('Login fulfilled payload:', action.payload); // Log payload
                 console.log('Action:', action); // Log entire action object
+                state.isLoading=false ;
             if (action.payload.success) {
                 state.user = action.payload.user; // Store user data from response
                 state.isAuthenticated = true;
