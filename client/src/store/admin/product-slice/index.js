@@ -18,10 +18,15 @@ export const addProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async ({ id, productData }, { rejectWithValue }) => {
+    console.log("product",productData)
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/products/${id}`, productData);
-      return response.data; // Return the data if successful
+      const response = await axios.put(`http://localhost:5000/api/admin/products/update/${id}`, productData);
+
+      console.log("Full response", response);
+
+      return response.data.data;
     } catch (error) {
+        console.log(error)
       return rejectWithValue(error.response.data); // Return the error data if there's an issue
     }
   }
@@ -103,10 +108,9 @@ const productsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        const index = state.products.findIndex(product => product._id === action.payload._id);
+        const index = state.products.findIndex((product) => product._id === action.payload._id);
         if (index !== -1) {
-          state.products[index] = action.payload; // Update the product in the list
+          state.products[index] = action.payload;
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {

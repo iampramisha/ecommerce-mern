@@ -31,7 +31,15 @@ export const loginUser=createAsyncThunk('/auth/login',
         return response.data;
     }
 )
-
+export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+    try {
+      // Make the API call to log out
+      const response = await axios.post('http://localhost:5000/api/auth/logout');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  });
 
 export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
     try {
@@ -119,7 +127,12 @@ const authSlice=createSlice({
                state.errorMessage = action.error.message; // Store error message
                state.user = null;
                state.isAuthenticated = false;
-             });
+             }).addCase(logoutUser.fulfilled, (state) => {
+                state.user = null;
+                state.isAuthenticated = false;
+                // Optionally, you can clear any other session-related state here
+              });
+        
         }
     }
 )

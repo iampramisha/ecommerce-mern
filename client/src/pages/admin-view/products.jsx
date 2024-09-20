@@ -289,6 +289,7 @@
 // export default AdminProducts;
 
 
+
 import React, { Fragment, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -296,7 +297,7 @@ import ProductsImageUpload from './image-upload';
 import CommonForm from '@/components/common/form';
 import { addProductFormElements } from '@/config';
 import { useDispatch, useSelector } from 'react-redux';
-import productSlice, { addProduct, fetchProducts } from '@/store/admin/product-slice';
+import { addProduct, fetchProducts, updateProduct } from '@/store/admin/product-slice';
 import { useToast } from '@/hooks/use-toast';
 import AdminproductTile from './product-tile';
 
@@ -312,52 +313,83 @@ const initialFormData = {
 };
 
 function AdminProducts() {
-  const [openCreateProductsFDialog, setOpenCreateDialog] = useState(false);
+  const [openCreateProductsDialog, setOpenCreateDialog] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState(null); // Store the product ID when editing
 
   const dispatch = useDispatch();
-  const { toast } = useToast();  // Destructure toast from useToast
-  const products = useSelector(state => state.products.products);
-  console.log(products); // Check if products are being fetched correctly
+  const { toast } = useToast();
+  const products = useSelector((state) => state.products.products);
 
   useEffect(() => {
-    dispatch(fetchProducts()); // Fetch products when the component mounts
+    dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Function to handle form submission
+  const openAddProductSheet = () => {
+    setFormData(initialFormData); // Reset form to initial state
+    setIsEditing(false);
+    setOpenCreateDialog(true);
+  };
+
+  const openEditProductSheet = (product) => {
+    setFormData({
+      ...product,
+      image: product.image || '', // Populate form with the product data
+    });
+    setUploadedImageUrl(product.image || ''); // Set image URL for preview
+    // Do not clear imageFile here
+    setIsEditing(true);
+    setCurrentProductId(product._id);
+    setOpenCreateDialog(true); // Open the sheet for editing
+  };
+  
+  // Handle Add or Edit Product submission
   const onSubmit = async (e) => {
     e.preventDefault();
     const productData = { ...formData, image: uploadedImageUrl };
 
-    try {
-      const actionResult = await dispatch(addProduct(productData));
+    console.log('Submitting Product Data:', productData); // Log data to verify
 
-      if (addProduct.fulfilled.match(actionResult)) {
-        // Success
-        toast({
-          title: 'Product added successfully!',
-          description: 'The new product has been added to your inventory.',
-          status: 'success',
-        });
-        setFormData(initialFormData);  // Reset form data
-        setUploadedImageUrl('');       // Reset uploaded image URL
-        setImageFile(null);            // Reset the selected image file
-        setOpenCreateDialog(false);    // Close the sheet
+    try {
+      if (isEditing) {
+        // Dispatch updateProduct if editing
+        actionResult = await dispatch(addProduct(productData)).unwrap();
+
+        if (updateProduct.fulfilled.match(actionResult)) {
+          toast({
+            title: 'Product updated successfully!',
+            description: 'The product has been updated.',
+            status: 'success',
+          })
+        }
       } else {
-        // Failed
-        toast({
-          title: 'Failed to add product.',
-          description: 'There was an error while adding the product. Please try again.',
-          status: 'error',
-        });
+        // Dispatch addProduct if adding a new product
+        const actionResult = await dispatch(addProduct(productData));
+
+        if (addProduct.fulfilled.match(actionResult)) {
+          toast({
+            title: 'Product added successfully!',
+            description: 'The new product has been added to your inventory.',
+            status: 'success',
+          });
+        }
       }
+    // Refetch products to update the list in the UI
+    await dispatch(fetchProducts());
+
+      // Reset form and close the sheet
+      setFormData(initialFormData);
+      setUploadedImageUrl('');
+      setImageFile(null);
+      setOpenCreateDialog(false);
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error('Error creating/updating product:', error);
       toast({
         title: 'Error',
-        description: 'An error occurred while adding the product.',
+        description: `An error occurred while ${isEditing ? 'updating' : 'adding'} the product.`,
         status: 'error',
       });
     }
@@ -365,35 +397,39 @@ function AdminProducts() {
 
   return (
     <Fragment>
-      
       <div className="container flex flex-row justify-center mx-auto px-4 gap-10">
-    
-        <div className='flex-1'>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
-          {products.map(product => (
-            <AdminproductTile key={product._id} product={product} />
-          ))}
+        <div className='flex-1 items-center'>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 justify-center items-center">
+            {products.slice() // Make a copy of the array to avoid mutation
+              .reverse().map((product) => (
+              <AdminproductTile
+                key={product._id}
+                product={product}
+                onEdit={() => openEditProductSheet(product)} // Open edit sheet with product data
+              />
+            ))}
+          </div>
         </div>
-        </div>
-      
-        <div className=' flex justify-end'>
-          <Button onClick={() => setOpenCreateDialog(true)}>
+        <div className='flex justify-end'>
+          <Button onClick={openAddProductSheet}>
             Add New Product
           </Button>
         </div>
       </div>
 
-      <Sheet open={openCreateProductsFDialog} onOpenChange={() => setOpenCreateDialog(false)}>
+      <Sheet open={openCreateProductsDialog} onOpenChange={() => setOpenCreateDialog(false)}>
         <SheetContent side="right" className="overflow-auto">
           <SheetHeader>
-            <SheetTitle>Add New Product</SheetTitle>
+            <SheetTitle>{isEditing ? 'Edit Product' : 'Add New Product'}</SheetTitle>
             {/* Image Upload Component */}
             <ProductsImageUpload
-              imageFile={imageFile}
-              setImageFile={setImageFile}
-              uploadedImageUrl={uploadedImageUrl}
-              setUploadedImageUrl={setUploadedImageUrl}
-            />
+  imageFile={imageFile}
+  setImageFile={setImageFile}
+  uploadedImageUrl={uploadedImageUrl}
+  setUploadedImageUrl={setUploadedImageUrl}
+  isEditing={isEditing} // Pass this flag to handle edit mode in the image upload component
+/>
+
           </SheetHeader>
           <div className='py-6'>
             {/* Product Form */}
@@ -402,7 +438,7 @@ function AdminProducts() {
               formData={formData}
               setFormData={setFormData}
               formControls={addProductFormElements}
-              buttonText='Add'
+              buttonText={isEditing ? 'Update' : 'Add'}
             />
           </div>
         </SheetContent>
@@ -412,4 +448,3 @@ function AdminProducts() {
 }
 
 export default AdminProducts;
-

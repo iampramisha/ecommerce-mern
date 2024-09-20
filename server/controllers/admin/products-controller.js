@@ -75,25 +75,58 @@ const getProductById = async (req, res) => {
   };
   const updateProductById = async (req, res) => {
     try {
-      const productId = req.params.id;
-      const updateData = req.body;
+      const { id } = req.params;
+      const {
+        image,
+        title,
+        description,
+        category,
+        brand,
+        price,
+        salePrice,
+        totalStock,
+        averageReview,
+      } = req.body;
   
-      // Find and update the product
-      const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, {
-        new: true, // Return the updated product
-        runValidators: true // Run validation on the update
-      });
-  
-      if (updatedProduct) {
-        res.json({ success: true, product: updatedProduct });
-      } else {
-        res.status(404).json({ success: false, message: 'Product not found' });
+      let findProduct = await Product.findById(id);
+      if (!findProduct) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
       }
-    } catch (error) {
-      console.error('Error updating product:', error);
-      res.status(500).json({ success: false, message: 'Server error' });
+  
+      // Update fields only if they are provided
+      findProduct.title = title || findProduct.title;
+      findProduct.description = description || findProduct.description;
+      findProduct.category = category || findProduct.category;
+      findProduct.brand = brand || findProduct.brand;
+      findProduct.price = price !== undefined ? price : findProduct.price;
+      findProduct.salePrice = salePrice !== undefined ? salePrice : findProduct.salePrice;
+      findProduct.totalStock = totalStock !== undefined ? totalStock : findProduct.totalStock;
+      findProduct.image = image || findProduct.image;
+      findProduct.averageReview = averageReview !== undefined ? averageReview : findProduct.averageReview;
+  
+      // Save updated product
+      await findProduct.save();
+  
+      // Re-fetch the product to ensure the latest data is returned
+      findProduct = await Product.findById(id);
+  
+      res.status(200).json({
+        success: true,
+        data: findProduct,
+      });
+    } catch (e) {
+      console.log('Error:', e);
+      res.status(500).json({
+        success: false,
+        message: "Error occurred",
+      });
     }
   };
+  
+  
   const deleteProduct = async (req, res) => {
     try {
       const productId = req.params.id;
