@@ -6,15 +6,19 @@ import { ArrowUpDownIcon, Circle } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { fetchAllFilteredProducts } from '@/store/shop/products-slice'
 import { useDispatch, useSelector } from 'react-redux'
+import ShoppingproductTile from '@/components/shopping-view/product-tile'
 
 export default function ShoppingListing() {
 
   const dispatch=useDispatch();
-  const {productList}=useSelector(state=> state.shopProducts)
+
+  const isLoading = useSelector(state => state.shopProducts);
   useEffect(()=>{
     dispatch(fetchAllFilteredProducts())
   },[dispatch])
+  const productList=useSelector(state=> state.shopProducts.productList)
   console.log("productList",productList)
+  
   return (
     <div  className='grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6'>
       <ProductFilter/>
@@ -47,8 +51,15 @@ All products
 </DropdownMenu>
 </div>
         </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+{
+  productList && productList.length > 0 ?
+productList.map(productItem=>
+  <ShoppingproductTile   key={productItem._id}  product={productItem} className="gap-4"/>
 
+) : null
+
+} 
         </div>
       </div>
     </div>

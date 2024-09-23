@@ -350,36 +350,37 @@ function AdminProducts() {
   const onSubmit = async (e) => {
     e.preventDefault();
     const productData = { ...formData, image: uploadedImageUrl };
-
+  
     console.log('Submitting Product Data:', productData); // Log data to verify
-
+  
     try {
+      let actionResult;
+  
       if (isEditing) {
         // Dispatch updateProduct if editing
-        actionResult = await dispatch(addProduct(productData)).unwrap();
-
-        if (updateProduct.fulfilled.match(actionResult)) {
-          toast({
-            title: 'Product updated successfully!',
-            description: 'The product has been updated.',
-            status: 'success',
-          })
-        }
+        actionResult = await dispatch(updateProduct({ id: currentProductId, productData })).unwrap();
+        
+        // Directly show success toast
+        toast({
+          title: 'Product updated successfully!',
+          description: 'The product has been updated.',
+          status: 'success',
+        });
       } else {
         // Dispatch addProduct if adding a new product
-        const actionResult = await dispatch(addProduct(productData));
-
-        if (addProduct.fulfilled.match(actionResult)) {
-          toast({
-            title: 'Product added successfully!',
-            description: 'The new product has been added to your inventory.',
-            status: 'success',
-          });
-        }
+        actionResult = await dispatch(addProduct(productData)).unwrap();
+  
+        // Directly show success toast
+        toast({
+          title: 'Product added successfully!',
+          description: 'The new product has been added to your inventory.',
+          status: 'success',
+        });
       }
-    // Refetch products to update the list in the UI
-    await dispatch(fetchProducts());
-
+  
+      // Refetch products to update the list in the UI
+      await dispatch(fetchProducts());
+  
       // Reset form and close the sheet
       setFormData(initialFormData);
       setUploadedImageUrl('');
@@ -387,14 +388,21 @@ function AdminProducts() {
       setOpenCreateDialog(false);
     } catch (error) {
       console.error('Error creating/updating product:', error);
+  
+      // Handle error based on its type
+      let errorMessage = 'An error occurred';
+      if (error?.data?.message) {
+        errorMessage = error.data.message;
+      }
+  
       toast({
         title: 'Error',
-        description: `An error occurred while ${isEditing ? 'updating' : 'adding'} the product.`,
+        description: `An error occurred while ${isEditing ? 'updating' : 'adding'} the product: ${errorMessage}`,
         status: 'error',
       });
     }
   };
-
+  
   return (
     <Fragment>
       <div className="container flex flex-row justify-center mx-auto px-4 gap-10">
