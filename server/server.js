@@ -8,6 +8,7 @@ const cors=require('cors');
 const authRouter=require('./routes/auth/auth-routes')
 const adminProductsRouter=require('./routes/admin/products-route')
 const shopProductsRouter =require('./routes/shop/products-routes')
+const CartRouter =require('./routes/shop/cart-routes')
 console.log('MongoDB URI:', process.env.DATABASE_URL);
 mongoose.connect(process.env.DATABASE_URL)
 .then(() => console.log('Connected to MongoDB'))
@@ -42,4 +43,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter)
 app.use('/api/admin/products', adminProductsRouter)
 app.use('/api/shop/products',shopProductsRouter)
+app.use('/api/shop/carts',CartRouter)
 app.listen(PORT,()=>console.log(`server is running on port  ${PORT}`))

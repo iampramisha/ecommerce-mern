@@ -3,12 +3,26 @@ import { Card, CardContent, CardFooter } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { categoryOptionsMap } from '@/config'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart } from '@/store/shop/cart-slice'
 
- function ShoppingproductTile({product})
+ function ShoppingproductTile({product,handleGetProductDetails})
   {
+    const dispatch = useDispatch();
+
+
+    const { user } = useSelector((state) => state.auth);
+    console.log("userrr",user);
+    const userId=user.id;
+    const handleAddToCart = (e) => {
+      e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
+      dispatch(addToCart({ userId, productId: product._id, quantity: 1 })); // Assuming quantity is 1
+    };
+  
+    
     return (
   
-    <Card className="w-full max-w-sm mx-auto shadow-sm mt-6">
+    <Card className="w-full max-w-sm mx-auto shadow-sm mt-6 "  onClick={handleGetProductDetails}>
         <div className=''>
 <div className='relative'>
 
@@ -45,10 +59,10 @@ import { categoryOptionsMap } from '@/config'
 </div>
 </CardContent>
 <CardFooter>
-    <Button className="w-full">Add to cart</Button>
+    <Button className="w-full"  onClick={handleAddToCart}>Add to cart</Button>
 </CardFooter>
         </div>
     </Card>
     )
 }
-export default ShoppingproductTile
+export default ShoppingproductTile;
