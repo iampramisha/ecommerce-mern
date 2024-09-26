@@ -177,9 +177,9 @@ const CartItemsContent = ({ items }) => {
     const { user } = useSelector((state) => state.auth);
     const userId = user.id;
   
-    // useEffect(() => {
-    //   console.log('Cart items updated:', items);
-    // }, [items]);
+    useEffect(() => {
+      console.log('Cart items updated:', items);
+    }, [items]);
   
     const calculateTotalPrice = () => {
       return items.reduce((total, item) => {
