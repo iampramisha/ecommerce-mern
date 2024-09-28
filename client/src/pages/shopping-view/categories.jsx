@@ -3,22 +3,27 @@ import { Baby, Bitcoin, Boxes, Codepen, Flower, Footprints, Framer, HeartHandsha
 
 const categories = [
   {
+    id:"men",
     name: 'Men',
     icon: <Shirt></Shirt>,
   },
   {
+    id:"women",
     name: 'Women',
     icon: <MessageCircleHeart></MessageCircleHeart>,
   },
   {
+    id:"kids",
     name: 'Kids',
     icon:<Baby></Baby>,
   },
   {
+    id:"accessories",
     name: 'Accessories',
     icon: <Watch></Watch>,
   },
   {
+    id:"footwear",
     name: 'Footwear',
     icon: <Footprints></Footprints>,
   },

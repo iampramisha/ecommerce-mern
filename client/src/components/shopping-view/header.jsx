@@ -136,6 +136,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Button } from '../ui/button';
 import { shoppingViewHeaderMenuItems } from '@/config';
@@ -145,13 +146,15 @@ import { logoutUser } from '@/store/auth-slice';
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react';
+import { Label } from '../ui/label';
 
 function ShoppingViewHeader() {
+  const navigate=useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { items, status } = useSelector((state) => state.cart); // Access cart status as well
   const [loading, setLoading] = useState(true); // New loading state
 
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -172,7 +175,23 @@ function ShoppingViewHeader() {
     sessionStorage.removeItem("filters");
     navigate('/auth/login');
   }
-
+  function handleNavigate(getCurrentMenuItem, section) {
+    sessionStorage.removeItem("filters"); // Clear previous filters first
+    
+    let currentFilter = null;
+  
+    // If the menu item is not 'home', set the category filter
+    if (getCurrentMenuItem.id !== 'home') {
+      currentFilter = {
+        category: [getCurrentMenuItem.id]
+      };
+      sessionStorage.setItem('filters', JSON.stringify(currentFilter)); // Store the filter
+    }
+  
+    // Navigate to the desired path
+    navigate(getCurrentMenuItem.path);
+  }
+  
   function HeaderRightContent() {
     return (
       <div className='flex flex-row lg:items-center lg:flex-row  gap-4'>
@@ -237,9 +256,11 @@ function ShoppingViewHeader() {
         <div className='hidden lg:block'>
           <nav className='flex sm:flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex lg:flex-row'>
             {shoppingViewHeaderMenuItems.map((menuItem) => (
-              <Link className="text-sm font-medium" key={menuItem.id} to={menuItem.path}>
+              <Label className="text-sm font-medium cursor-pointer" key={menuItem.id} 
+              onClick={() => handleNavigate(menuItem)}
+     >
                 {menuItem.label}
-              </Link>
+              </Label>
             ))}
           </nav>
         </div>

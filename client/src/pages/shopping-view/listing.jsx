@@ -27,6 +27,7 @@ import ProductDetailDialog from '@/components/shopping-view/productDetailsmodel'
 
     const productList = useSelector(state => state.shopProducts.productList);
     const selectedProduct = useSelector(state => state.shopProducts.selectedProduct); // Access selectedProduct correctly
+    const categorySearchParam = searchParams.get("category");
 
     useEffect(() => {
         if (selectedProduct) {
@@ -62,52 +63,57 @@ import ProductDetailDialog from '@/components/shopping-view/productDetailsmodel'
         console.log(`Initiating fetch for product ID: ${productItem._id}`);
      
         setDialogOpen(true);
-    }
-
+    };
+    useEffect(() => {
+      setSort("price-lowtohigh");
+      setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+    }, [categorySearchParam]);
+  
     function handleFilter(getSectionId, getCurrentOption) {
-        let cpyFilters = { ...filters };
-        const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+      let cpyFilters = { ...filters };
+      const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+  
+      if (indexOfCurrentSection === -1) {
+        cpyFilters = {
+          ...cpyFilters,
+          [getSectionId]: [getCurrentOption],
+        };
+      } else {
+        const indexOfCurrentOption =
+          cpyFilters[getSectionId].indexOf(getCurrentOption);
+  
+        if (indexOfCurrentOption === -1)
+          cpyFilters[getSectionId].push(getCurrentOption);
+        else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+      }
+  
+      setFilters(cpyFilters);
+      sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+    };
 
-        if (indexOfCurrentSection === -1) {
-            cpyFilters = {
-                ...cpyFilters,
-                [getSectionId]: [getCurrentOption]
-            };
-        } else {
-            const indexOfCurrentSection = cpyFilters[getSectionId].indexOf(getCurrentOption);
-            if (indexOfCurrentSection === -1) {
-                cpyFilters[getSectionId].push(getCurrentOption);
-            } else {
-                cpyFilters[getSectionId].splice(indexOfCurrentSection, 1);
-            }
-        }
-        setFilters(cpyFilters);
-        sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
-    }
 
-    useEffect(() => {
-        setFilters(JSON.parse(sessionStorage.getItem('filters')) || {});
-    }, []);
-
-    useEffect(() => {
-        if (filters && Object.keys(filters).length > 0) {
-            const createQueryString = createSearchParamsHelper(filters);
-            setSearchParams(new URLSearchParams(createQueryString));
-        }
-    }, [filters]);
-    const handleCloseDialog = () => {
+  const handleCloseDialog = () => {
       setDialogOpen(false);
       setSelectedProductId(null);
     };
     useEffect(() => {
-        if (filters !== null && sort !== null) {
-            dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
-        }
+      if (filters && Object.keys(filters).length > 0) {
+        const createQueryString = createSearchParamsHelper(filters);
+        setSearchParams(new URLSearchParams(createQueryString));
+      }
+    }, [filters]);
+  
+    useEffect(() => {
+      if (filters !== null && sort !== null)
+        dispatch(
+          fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
+        );
     }, [dispatch, sort, filters]);
+  
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6'>
-            <ProductFilter filters={filters} handleFilters={handleFilter} />
+            <ProductFilter filters={filters} handleFilter={handleFilter} />
             <div className='bg-background w-full rounded-lg shadow-sm'>
                 <div className='p-4 border-b gap-3 flex items-center justify-between'>
                     <h2 className='text-lg font-semibold'>All products</h2>
