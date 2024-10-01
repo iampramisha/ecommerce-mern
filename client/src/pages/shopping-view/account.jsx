@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
 import AddressTile from '@/components/shopping-view/address-tile';
 import Address from '@/components/shopping-view/address';
+import ShoppingOrders from '@/components/shopping-view/orders';
 
 export default function ShoppingAccount() {
   // State to show/hide AddressTile
@@ -23,14 +24,18 @@ export default function ShoppingAccount() {
       <div className='w-full h-[350px]'>
         <img className='w-full h-full object-cover' src='https://americantwoshot.com/wp-content/uploads/2021/12/starting-a-clothing-line.jpg' alt='wardrobe' />
       </div>
-      <div className='w-full  p-20 py-20'>
+      <div className='w-full  sm:p-3 md:p-20 md:py-20'>
         <div className='shadow-lg p-10 h-full border border-gray'>
           <Tabs defaultValue="account">
             <TabsList>
               <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="address">Address</TabsTrigger>
             </TabsList>
-            <TabsContent value="orders">Orders</TabsContent>
+            <TabsContent value="orders">
+
+<ShoppingOrders/>
+
+            </TabsContent>
             <TabsContent value="address" className="w-full">
               <div className='flex justify-center '>
                 {/* <Button className="mt-3 mb-3" onClick={handleAddAddress}> */}
@@ -51,7 +56,8 @@ export default function ShoppingAccount() {
       >
         &times; {/* This represents the close (X) icon */}
       </button>
-      <AddressTile></AddressTile>
+
+      <AddressTile col={true}></AddressTile>
     </div>
   )}
 

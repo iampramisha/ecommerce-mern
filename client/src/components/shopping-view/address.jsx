@@ -142,7 +142,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteAddress, fetchAddresses } from '@/store/shop/address-slice';
 import AddressTile from './address-tile';
 
-export default function Address() {
+export default function Address({col}) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const userId = user.id;
@@ -179,33 +179,34 @@ export default function Address() {
       });
   };
 
- 
+ console.log("col,,",col)
     return (
         <>
-          <div className='flex flex-col items-center w-full'>
-            <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center'>
-              {addresses.length > 0 ? (
-                addresses.map((address) => (
-                  <div key={address._id} className='flex flex-col border border-gray-300 rounded-lg p-6 h-full'>
-                    <div className='flex-grow'>
-                      <p>Address: {address.address}</p>
-                      <p>City: {address.city}</p>
-                      <p>Pincode: {address.pinCode}</p>
-                      <p>Phone: {address.phone}</p>
-                      <p>Notes: {address.notes}</p>
-                    </div>
-                    <div className='flex justify-between pt-4 mt-auto'>
-                      <Button onClick={() => handleEditClick(address)}>Edit</Button>
-                      <Button onClick={() => handleDeleteClick(address._id)}>Delete</Button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No addresses found.</p>
-              )}
+        <div className="flex flex-col w-full">
+      <div
+        className={`w-full grid grid-cols-1 md:grid-cols-1 ${
+          col ? "lg:grid-cols-1" : "lg:grid-cols-3"
+        } gap-6 justify-items-center`}
+      >
+        {addresses.length > 0 ? (
+          addresses.map((address) => (
+            <div
+              key={address._id}
+              className="flex flex-col border border-gray-300 rounded-lg p-2 md:p-6 h-full w-full max-w-xs"
+            >
+              <div className="flex-grow">
+                <p>Address: {address.address}</p>
+                <p>City: {address.city}</p>
+                <p>Pincode: {address.pinCode}</p>
+                <p>Phone: {address.phone}</p>
+                <p>Notes: {address.notes}</p>
+              </div>
             </div>
-      
-            {/* Edit form section */}
+          ))
+        ) : (
+          <p>No addresses found</p>
+        )}
+      </div>
             <div className='mt-8 w-full flex-col items-center'>
               {selectedAddress && (
                 <>
@@ -214,6 +215,7 @@ export default function Address() {
                   <AddressTile
                     selectedAddress={selectedAddress}
                     onCancel={handleCancelEdit}
+                   
                   />
                 </>
               )}

@@ -95,12 +95,13 @@ import CommonForm from '../common/form';
 import { addAddress, fetchAddresses, updateAddress } from '@/store/shop/address-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../ui/button';
+import Address from './address';
 
-export default function AddressTile({ selectedAddress, onCancel }) {
+export default function AddressTile({ selectedAddress, onCancel ,col}) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const userId = user.id;
-
+console.log("colll,",col)
   // Set initial state for form data based on the selected address
   const [formData, setFormData] = useState({
     address: selectedAddress ? selectedAddress.address : '',
@@ -213,7 +214,7 @@ export default function AddressTile({ selectedAddress, onCancel }) {
         onSubmit={handleSubmit}
         buttonText={selectedAddress ? "Update Address" : "Submit Address"}
       />
-     
+
     </div>
   );
 }

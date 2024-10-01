@@ -1,5 +1,6 @@
+// ShoppingOrders.jsx
 import React, { useState } from 'react';
-
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import {
   Table,
   TableBody,
@@ -9,44 +10,38 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Button } from '../ui/button';
+import UserOrderDetailsDialog from './userOrderDetails';
 
-
-import { Card , CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import OrdersDialogAdmin from '@/components/admin-view/OrdersDialogAdmin';
-
-function AdminOrders() {
+export default function ShoppingOrders() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  // Sample order data
   const orders = [
     { id: 'INV001', date: '2023-09-21', status: 'Paid', paymentMethod: 'Credit Card', price: '$250.00' },
     { id: 'INV002', date: '2023-09-22', status: 'Pending', paymentMethod: 'PayPal', price: '$180.00' },
-    // Add more orders as needed...
+    // More orders here...
   ];
 
-  // Function to handle row click and open dialog with selected order
-  const handleRowClick = (order) => {
+  const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setOpenDialog(true);
   };
 
-  // Function to close the dialog
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedOrder(null);  // Clear selected order when dialog is closed
+    setSelectedOrder(null);
   };
 
   return (
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>All Orders</CardTitle>
+          <CardTitle>Order history</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
-            <TableCaption>A list of your recent orders.</TableCaption>
+            <TableCaption>A list of your recent invoices.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead>Order Id</TableHead>
@@ -64,7 +59,7 @@ function AdminOrders() {
                   <TableCell>{order.status}</TableCell>
                   <TableCell>{order.price}</TableCell>
                   <TableCell>
-                    <Button onClick={(e) => { e.stopPropagation(); handleRowClick(order); }}>
+                    <Button onClick={() => handleViewDetails(order)}>
                       View Details
                     </Button>
                   </TableCell>
@@ -75,8 +70,8 @@ function AdminOrders() {
         </CardContent>
       </Card>
 
-      {/* Pass selectedOrder and state control to the dialog component */}
-      <OrdersDialogAdmin
+      {/* Order details dialog */}
+      <UserOrderDetailsDialog
         open={openDialog}
         onClose={handleCloseDialog}
         order={selectedOrder}
@@ -84,5 +79,3 @@ function AdminOrders() {
     </div>
   );
 }
-
-export default AdminOrders;

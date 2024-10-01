@@ -208,7 +208,7 @@ function ShoppingViewHeader() {
             {loading ? (
               <div>Loading your cart...</div>
             ) : (
-              <CartWrapper cartItems={items} />
+              <CartWrapper cartItems={items} showCheckOutButton={true} />
             )}
           </SheetContent>
         </Sheet>
