@@ -20,12 +20,13 @@ import ProductDetailDialog from '@/components/shopping-view/productDetailsmodel'
     const [sort, setSort] = useState('price-lowtohigh');
     const [selectedProductId, setSelectedProductId] = useState(null);
     
-  
-    const [isDialogOpen, setDialogOpen] = useState(false);
+ const [isDialogOpen, setDialogOpen] = useState(false);
     const dispatch = useDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const productList = useSelector(state => state.shopProducts.productList);
+    console.log("productslisstttttt,",productList);
+    console.log(";length",productList.length);
     const selectedProduct = useSelector(state => state.shopProducts.selectedProduct); // Access selectedProduct correctly
     const categorySearchParam = searchParams.get("category");
 
@@ -118,7 +119,7 @@ import ProductDetailDialog from '@/components/shopping-view/productDetailsmodel'
                 <div className='p-4 border-b gap-3 flex items-center justify-between'>
                     <h2 className='text-lg font-semibold'>All products</h2>
                     <div className='flex items-center'>
-                        <span className='text-muted-foreground mr-2'>10 products</span>
+                        <span className='text-muted-foreground mr-2'>{productList.length} products</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="sm" className="flex items-center gap-3">

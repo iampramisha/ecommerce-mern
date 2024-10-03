@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { logoutUser } from '@/store/auth-slice'
 import { useDispatch } from 'react-redux'
+import { resetOrders } from '@/store/shop/order-slice'
 
 export default function AdminHeader({ setOpen }) {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ export default function AdminHeader({ setOpen }) {
   const handleLogout = () => {
     dispatch(logoutUser());
     // Optionally, handle redirection or UI updates after dispatch
+    dispatch(resetOrders());
   };
 
   return (

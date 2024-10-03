@@ -69,7 +69,9 @@ export default function AdminproductTile({ product, onEdit }) {
           <span className={`${product?.salePrice > 0 ? 'line-through' : ''} text-lg font-semibold text-primary`}>
             ${product?.price}
           </span>
-          <span className='text-lg font-bold'>${product?.salePrice}</span>
+          {product?.salePrice ? (
+  <span className='text-lg font-bold'>${product.salePrice}</span>
+) : null}
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 bg-gray-100">

@@ -2,9 +2,10 @@ const mongoose=require('mongoose');
 const { Product } = require('./Product');
 const OrderSchema= new mongoose.Schema({
     userId: String,
+    cartId:String,
     cartItems:[
        {
-        ProductId:String,
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         title:String,
         image:String,
         price:String,
@@ -21,7 +22,7 @@ quantity:Number
     },
     orderStatus:String,
     paymentMethod:String,
-    paymentStatus:Number,
+    paymentStatus:String,
     orderDate:Date,
     orderUpdateDtae: Date,
     paymentId: String,

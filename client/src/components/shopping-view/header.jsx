@@ -120,7 +120,7 @@
 //         </Sheet>
 
 //         <div className='hidden lg:block'>
-//           <MenuItems />
+//           < />
 //         </div>
         
       
@@ -181,7 +181,7 @@ function ShoppingViewHeader() {
     let currentFilter = null;
   
     // If the menu item is not 'home', set the category filter
-    if (getCurrentMenuItem.id !== 'home') {
+    if (getCurrentMenuItem.id !== 'home'  && getCurrentMenuItem.id !== 'products') {
       currentFilter = {
         category: [getCurrentMenuItem.id]
       };
