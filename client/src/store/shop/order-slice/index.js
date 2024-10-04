@@ -62,11 +62,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Async thunk to create an order
-export const createOrder = createAsyncThunk('order/createOrder', async ({ items, userId, cartId, addressInfo, total }) => {
+export const createOrder = createAsyncThunk('order/createOrder', async ({ items, userId, addressInfo, total }) => {
     const response = await axios.post("http://localhost:5000/api/shop/order/createOrder", {
         items,
         userId,
-        cartId,
+     
         addressInfo,
         total,
     });

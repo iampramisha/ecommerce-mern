@@ -7,9 +7,10 @@ const payment  = require('paypal-rest-sdk');
 const paypal = require('../../helpers/paypal');
 const { Product } = require('../../models/Product');
 const { Cart } = require('../../models/Cart');
+
 // Route to create an order and initiate payment
 const createOrder = async (req, res) => {
-    const { items, userId,cartId, addressInfo, total } = req.body; // Extract total along with other fields
+    const { items, userId, addressInfo, total } = req.body; // Extract total along with other fields
     const paymentMethod = "PayPal"; // Set paymentMethod to "PayPal" always
 
     // Log the incoming request data
@@ -25,8 +26,9 @@ const createOrder = async (req, res) => {
         paymentStatus: 0,
         orderDate: new Date(),
         orderUpdateDate: new Date(),
-        totalPrice: total, // Save the total price in the order
-        cartId:cartId
+        totalPrice: total
+         // Save the total price in the order
+   
     });
 
     try {
@@ -75,7 +77,8 @@ const createOrder = async (req, res) => {
 
 // Route to capture paymentconst capturePayment = async (req, res) => {
   // Route to capture // Route to capture payment
-  const capturePayment = async (req, res) => {
+  // Route to capture payment
+const capturePayment = async (req, res) => {
     try {
         const { paymentId, payerId, orderId } = req.body;
 
@@ -88,29 +91,38 @@ const createOrder = async (req, res) => {
             });
         }
 
+        // Update payment status and order confirmation
         order.paymentStatus = "paid";
         order.orderStatus = "confirmed";
         order.paymentId = paymentId;
         order.payerId = payerId;
+
         const cartItems = order.cartItems;
-        const CartId=order.cartId;
+
+        // Update product stock
         for (let item of cartItems) {
-          const product = await Product.findById(item.productId);
-          if (product) {
-            product.totalStock -= item.quantity;
-            await product.save();
-          }
+            const product = await Product.findById(item.productId);
+            if (product) {
+                product.totalStock -= item.quantity;
+                await product.save();
+            }
         }
 
-await Cart.findByIdAndDelete(CartId);
-await order.save();
+        // Assuming Cart model stores items per user, delete the cart items after the order is confirmed
+        // Delete the purchased cart items
+        const userId = order.userId;
+        await Cart.updateOne(
+            { user: userId }, // Use the correct field name
+            { $pull: { products: { product: { $in: cartItems.map(item => item.productId) } } } } // Correct products reference
+        );
 
-res.status(200).json({
-  success:true,
-  message:'order-confirmed'  ,
-  data:order
+        await order.save();
 
-})
+        res.status(200).json({
+            success: true,
+            message: 'Order confirmed and cart items deleted',
+            data: order,
+        });
        
     } catch (e) {
         console.log(e);

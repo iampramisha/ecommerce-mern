@@ -304,8 +304,8 @@ export default function ShoppingCheckout() {
   const { items } = useSelector((state) => state.cart); // Access cart items from Redux
   const { user } = useSelector((state) => state.auth); // Access user info from Redux
   const userId = user?.id; // Get the logged-in user ID
-const cartId=items?.ProductId;
-console.log("cartId",cartId);
+
+console.log("itemsszzwwww", items)
 
   const handleAddAddress = () => {
     setShowAddressTile(!showAddressTile);
@@ -352,7 +352,7 @@ console.log("cartId",cartId);
       const response = await dispatch(
         createOrder({
           items: items.map(item => ({
-            ProductId: item.id,
+            productId: item.productId,
             title: item.title,
             image: item.image,
             price: item.price,
@@ -360,7 +360,7 @@ console.log("cartId",cartId);
             quantity: item.quantity,
           })),
           userId,
-          cartId,
+       
           addressInfo,
           total,
         })
