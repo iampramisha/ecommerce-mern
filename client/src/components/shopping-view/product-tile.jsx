@@ -16,7 +16,8 @@ import { addToCart } from '@/store/shop/cart-slice'
     const userId=user.id;
     const handleAddToCart = (e) => {
       e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
-      dispatch(addToCart({ userId, productId: product._id, quantity: 1 })); // Assuming quantity is 1
+  console.log("productweight", product.weight)
+      dispatch(addToCart({ userId, productId: product._id, quantity: 1, weight: product.weight })); // Assuming quantity is 1
     };
   
     

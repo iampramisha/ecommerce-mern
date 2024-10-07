@@ -363,13 +363,16 @@ useEffect(() => {
     setSelectedOrderId(null);
   };
   // Function to calculate total price of cart items
-const calculateTotalPrice = (cartItems) => {
-  return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.salePrice) || 0; // Ensure price is a number
-      const quantity = item.quantity || 1; // Default to 1 if quantity is not provided
-      return total + price * quantity;
-  }, 0).toFixed(2); // Return total price formatted to 2 decimal places
-};
+// Function to calculate total price of cart items, including shipping cost
+// const calculateTotalPrice = (cartItems, shippingCost = 0) => {
+//   const cartTotal = cartItems.reduce((total, item) => {
+//     const price = parseFloat(item.salePrice) || 0; // Ensure price is a number
+//     const quantity = item.quantity || 1; // Default to 1 if quantity is not provided
+//     return total + price * quantity;
+//   }, 0);
+  
+//   return (cartTotal + parseFloat(shippingCost)).toFixed(2); // Add shipping cost and format to 2 decimal places
+// };
 
 
   // Calculate the total number of pages
@@ -417,8 +420,10 @@ const calculateTotalPrice = (cartItems) => {
                         <TableCell className="text-center">{new Date(order.orderDate).toLocaleDateString()}</TableCell>
                         <TableCell className="text-center">{order.orderStatus}</TableCell>
                         <TableCell className="text-center">
-                    {calculateTotalPrice(order.cartItems)} {/* Calculate total price from cartItems */}
-                </TableCell>
+${order.totalPrice}
+ {/* Calculate total price including shipping cost */}
+</TableCell>
+
                         <TableCell className="text-center">
                           <Button onClick={() => handleViewDetails(order._id)}>
                             View Details

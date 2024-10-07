@@ -27,8 +27,7 @@
 // const Cart = mongoose.model('Cart', cartSchema);
 // module.exports = { Cart };
 const mongoose = require('mongoose');
-const { User } = require('./User');
-const { Product } = require('./Product');
+
 // Define Cart Schema
 const cartSchema = new mongoose.Schema({
   user: {
@@ -47,6 +46,10 @@ const cartSchema = new mongoose.Schema({
         type: Number,
         default: 1,
       },
+  
+      weight:{
+        type: Number
+      }
     },
   ],
 }, { timestamps: true });

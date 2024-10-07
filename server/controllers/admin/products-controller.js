@@ -26,7 +26,7 @@ res.json({
 // @route   POST /api/products
  const createProduct = async (req, res) => {
   try {
-    const { image, title, description, category, brand, price, salePrice, totalStock } = req.body;
+    const { image, title, description, category, brand, price, salePrice, totalStock,weight } = req.body;
 
     // Create new product
     const product = new Product({
@@ -38,6 +38,7 @@ res.json({
       price,
       salePrice,
       totalStock,
+      weight
     });
 
     // Save the product
@@ -86,6 +87,7 @@ const getProductById = async (req, res) => {
         salePrice,
         totalStock,
         averageReview,
+        weight
       } = req.body;
   
       let findProduct = await Product.findById(id);
@@ -106,7 +108,7 @@ const getProductById = async (req, res) => {
       findProduct.totalStock = totalStock !== undefined ? totalStock : findProduct.totalStock;
       findProduct.image = image || findProduct.image;
       findProduct.averageReview = averageReview !== undefined ? averageReview : findProduct.averageReview;
-  
+      findProduct.weight = weight !== undefined ? weight : findProduct.weight;
       // Save updated product
       await findProduct.save();
   

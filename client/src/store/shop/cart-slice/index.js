@@ -6,25 +6,28 @@ const BASE_URL = 'http://localhost:5000/api/shop/carts';
 
 // Async thunks for handling API calls
 
-
 export const addToCart = createAsyncThunk(
-    'cart/addToCart',
-    async ({ userId, productId, quantity }, { rejectWithValue }) => {
-        try {
+  'cart/addToCart',
+  async ({ userId, productId, quantity, weight }, { rejectWithValue }) => {
+      try {
+          // Log the input parameters to confirm they are correct
+          console.log("Adding to cart:", { userId, productId, quantity, weight });
+          
           const response = await axios.post(`${BASE_URL}/add`, {
-            userId,
-    
-            productId,
-            quantity,
+              userId,
+              productId,
+              quantity,
+              weight
           });
-            return response.data; // Assuming your API returns the updated cart data in a consistent format
-        } catch (error) {
+
+          return response.data; // Assuming your API returns the updated cart data in a consistent format
+      } catch (error) {
+          console.error("Error adding to cart:", error); // Log the error for debugging
           return rejectWithValue(error.response.data); // Handle error response
-        }
       }
-    );
-  
-  
+  }
+);
+
   export const fetchCartItems = createAsyncThunk(
     'cart/fetchCartItems',
     async (userId, { rejectWithValue }) => {

@@ -310,6 +310,7 @@ const initialFormData = {
   price: '',
   salePrice: '',
   totalStock: '',
+  weight:'',
 };
 
 function AdminProducts() {

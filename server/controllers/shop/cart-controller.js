@@ -60,65 +60,68 @@ const { Product } = require("../../models/Product");
 //     }
 //   };
     // In your backend controller (example with MongoDB)
-    
     const addToCart = async (req, res) => {
-        try {
-          const { userId, productId, quantity } = req.body;
-      
+      try {
+          const { userId, productId, quantity, weight } = req.body;
+  
           // Find the user's cart
           let cart = await Cart.findOne({ user: userId });
-      
+  
           // If no cart exists for the user, create a new one
           if (!cart) {
-            cart = new Cart({
-              user: userId,
-              products: [{ product: productId, quantity: quantity || 1 }],
-            });
+              cart = new Cart({
+                  user: userId,
+                  products: [{ product: productId, quantity: quantity || 1, weight: weight }], // Include weight
+              });
           } else {
-            // Check if the product already exists in the cart
-            const productIndex = cart.products.findIndex(
-              (item) => item.product.toString() === productId
-            );
-      
-            if (productIndex >= 0) {
-              // If the product exists, update its quantity
-              cart.products[productIndex].quantity += quantity || 1;
-            } else {
-              // If the product does not exist, add it to the cart
-              cart.products.push({ product: productId, quantity: quantity || 1 });
-            }
+              // Check if the product already exists in the cart
+              const productIndex = cart.products.findIndex(
+                  (item) => item.product.toString() === productId
+              );
+  
+              if (productIndex >= 0) {
+                  // If the product exists, update its quantity
+                  cart.products[productIndex].quantity += quantity || 1;
+                  // If you want to update weight, uncomment the next line
+                  // cart.products[productIndex].weight = weight; // Update weight if needed
+              } else {
+                  // If the product does not exist, add it to the cart
+                  cart.products.push({ product: productId, quantity: quantity || 1, weight: weight }); // Include weight
+              }
           }
-      
+  
           // Save the cart and return the updated cart
           await cart.save();
-      
+  
           // Fetch and populate cart items to standardize the response format
           const populatedCart = await Cart.findOne({ user: userId }).populate({
-            path: 'products.product',
-            select: 'image title price salePrice',
+              path: 'products.product',
+              select: 'image title price salePrice',
           });
-      
+  
           const formattedItems = populatedCart.products.map(item => ({
-            productId: item.product._id,
-            salePrice: item.product.salePrice,
-            price: item.product.price,
-            image: item.product.image,
-            title: item.product.title,
-            quantity: item.quantity,
+              productId: item.product._id,
+              salePrice: item.product.salePrice,
+              price: item.product.price,
+              image: item.product.image,
+              title: item.product.title,
+              quantity: item.quantity,
+              weight: weight// Make sure to include weight here
           }));
-      
+  
           res.status(200).json({
-            success: true,
-            data: {
-              ...populatedCart._doc,
-              items: formattedItems,
-            },
+              success: true,
+              data: {
+                  ...populatedCart._doc,
+                  items: formattedItems,
+              },
           });
-        } catch (error) {
+      } catch (error) {
           console.error(error);
           res.status(500).json({ message: 'Server Error' });
-        }
-      };
+      }
+  };
+  
       const fetchCartItems = async (req, res) => {
         try {
           const { userId } = req.params;
@@ -160,6 +163,8 @@ const { Product } = require("../../models/Product");
             image: item.product.image,
             title: item.product.title,
             quantity: item.quantity,
+            weight: weight
+        
           }));
       
           res.status(200).json({
@@ -237,6 +242,7 @@ const { Product } = require("../../models/Product");
             price: item.product ? item.product.price : null,
             salePrice: item.product ? item.product.salePrice : null,
             quantity: item.quantity,
+          
         }));
 
         // Send the response

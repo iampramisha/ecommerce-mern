@@ -10,27 +10,24 @@ const { Cart } = require('../../models/Cart');
 
 // Route to create an order and initiate payment
 const createOrder = async (req, res) => {
-    const { items, userId, addressInfo, total } = req.body; // Extract total along with other fields
-    const paymentMethod = "PayPal"; // Set paymentMethod to "PayPal" always
+    const { items, userId, addressInfo, total, shippingCost } = req.body; // Include shippingCost
+    const paymentMethod = "PayPal";
 
-    // Log the incoming request data
-    console.log('Incoming request to create order:', { items, userId, addressInfo, paymentMethod, total });
+    console.log('Incoming request to create order:', { items, userId, addressInfo, paymentMethod, total, shippingCost });
+    const formattedTotal = parseFloat(total).toFixed(2).toString();
 
-    // Create and save the order
     const newOrder = new Order({
         userId,
         cartItems: items,
         addressInfo,
         orderStatus: 'Pending',
-        paymentMethod, // This will always be "PayPal"
+        paymentMethod,
         paymentStatus: 0,
         orderDate: new Date(),
         orderUpdateDate: new Date(),
-        totalPrice: total
-         // Save the total price in the order
-   
+        totalPrice: formattedTotal,  // Save the formatted total price
+        shippingCost, // Save the shipping cost
     });
-
     try {
         await newOrder.save();
         console.log('Order saved successfully:', newOrder._id); // Log the saved order ID

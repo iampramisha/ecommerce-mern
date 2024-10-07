@@ -20,6 +20,8 @@ quantity:Number
         pinCode:String,
         notes:String
     },
+    totalPrice: String, // Make sure totalPrice is included and saved as a string
+    shippingCost: String, 
     orderStatus:String,
     paymentMethod:String,
     paymentStatus:String,

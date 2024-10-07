@@ -35,6 +35,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  weight: { // Add the weight field
+    type: Number,
+    required: true, // You can adjust this based on whether weight is mandatory
+  },
 }, { timestamps: true });
 
 const Product = mongoose.model('Product', productSchema);

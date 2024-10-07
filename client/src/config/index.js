@@ -103,6 +103,13 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter total stock",
   },
+  {
+    name: 'weight',
+    label: 'Weight (kg)',
+    componentType: 'input',
+    type: 'number',
+    placeholder: 'Enter weight of the product',
+  },
 ];
 
 
