@@ -133,6 +133,7 @@
 // }
 
 // export default ShoppingViewHeader;
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -157,18 +158,18 @@ function ShoppingViewHeader() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchCartItems(user.id));
-    }
-  }, [dispatch, user?.id]);
+  // useEffect(() => {
+  //   if (user?.id) {
+  //     dispatch(fetchCartItems(user.id));
+  //   }
+  // }, [dispatch, user?.id]);
 
   // Monitor the status of the cart fetching
-  useEffect(() => {
-    if (status === 'succeeded' || status === 'failed') {
-      setLoading(false); // Stop loading when cart fetching completes
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (status === 'succeeded' || status === 'failed') {
+  //     setLoading(false); // Stop loading when cart fetching completes
+  //   }
+  // }, [status]);
 
   function handleLogout() {
     dispatch(logoutUser());
@@ -205,11 +206,9 @@ function ShoppingViewHeader() {
 
           <SheetContent>
             {/* Show loading spinner or message while cart is being fetched */}
-            {loading ? (
-              <div>Loading your cart...</div>
-            ) : (
+      
               <CartWrapper cartItems={items} showCheckOutButton={true} />
-            )}
+       
           </SheetContent>
         </Sheet>
 

@@ -8,6 +8,7 @@ const paypal = require('../../helpers/paypal');
 const { Product } = require('../../models/Product');
 const { Cart } = require('../../models/Cart');
 
+
 // Route to create an order and initiate payment
 const createOrder = async (req, res) => {
     const { items, userId, addressInfo, total, shippingCost } = req.body; // Include shippingCost

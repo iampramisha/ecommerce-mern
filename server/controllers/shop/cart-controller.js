@@ -163,7 +163,7 @@ const { Product } = require("../../models/Product");
             image: item.product.image,
             title: item.product.title,
             quantity: item.quantity,
-            weight: weight
+            weight: item.weight
         
           }));
       

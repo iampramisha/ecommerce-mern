@@ -5,36 +5,65 @@ import { Button } from '../ui/button'
 import { categoryOptionsMap } from '@/config'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '@/store/shop/cart-slice'
+import { useToast } from '@/hooks/use-toast'
 
  function ShoppingproductTile({product,handleGetProductDetails})
   {
     const dispatch = useDispatch();
-
+    const {toast}=useToast();
 
     const { user } = useSelector((state) => state.auth);
     console.log("userrr",user);
+    
+    const { items } = useSelector((state) => state.cart);
     const userId=user.id;
     const handleAddToCart = (e) => {
-      e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
-  console.log("productweight", product.weight)
-      dispatch(addToCart({ userId, productId: product._id, quantity: 1, weight: product.weight })); // Assuming quantity is 1
+        e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
+console.log("itemsxxzz",items);
+        // Find the current quantity of this product in the cart
+        const currentItem = items.find(item => item.productId === product._id);
+        const currentQuantity = currentItem ? currentItem.quantity : 0;
+
+        // Check if adding more than available stock
+        if (currentQuantity + 1 > product.totalStock) {
+            toast({
+                variant:"destructive",
+                title: `Stock Limit Reached`,
+                description: `Cannot add more than ${product.totalStock} items to the cart.`,
+                status: 'error',
+            });
+        } else {
+            dispatch(addToCart({ userId, productId: product._id, quantity: 1, weight: product.weight }));
+            toast({
+                
+                title: 'Success',
+                description: 'Item added to cart',
+                status: 'success',
+            });
+        }
     };
-  
+
     
     return (
   
     <Card className="w-full max-w-sm mx-auto shadow-sm mt-6 "  onClick={handleGetProductDetails}>
         <div className=''>
-<div className='relative'>
+        <div className="relative">
+    <img src={product?.image} alt={product?.title} className="w-full h-[300px] object-cover rounded-t-lg" />
 
-    <img src={product?.image} alt={product?.title} className='w-full h-[300px] object-cover rounded-t-lg'/>
-{product?.salePrice > 0 ?
-<Badge
-    
-    className="absolute top-3 left-2 bg-red-500 "
-    >Sale</Badge> : null
-}
+    {product?.salePrice > 0 && (
+        <div className="absolute top-2 left-2">
+            {product?.totalStock === 0 ? (
+                <Badge className="bg-gray-500">Out of Stock</Badge>
+            ) : product?.totalStock < 10 ? (
+                <Badge className="bg-red-500">Only {product?.totalStock} items left</Badge>
+            ) : (
+                <Badge className="bg-red-500">Sale</Badge>
+            )}
+        </div>
+    )}
 </div>
+
 <CardContent className="p-4">
 <h2 className='text-xl font-bold mb-2'>{product?.title}</h2>
 <div className='flex justify-between items-center mb-2'>
@@ -60,8 +89,17 @@ import { addToCart } from '@/store/shop/cart-slice'
 </div>
 </CardContent>
 <CardFooter>
-    <Button className="w-full"  onClick={handleAddToCart}>Add to cart</Button>
+    {product?.totalStock > 0 ? (
+        <Button className="w-full" onClick={handleAddToCart}>
+            Add to cart
+        </Button>
+    ) : (
+        <Button className="w-full bg bg-gray-500 color-black" onClick={handleAddToCart}>
+   Out of stock
+    </Button>
+    )}
 </CardFooter>
+
         </div>
     </Card>
     )
