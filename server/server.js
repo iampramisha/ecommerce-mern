@@ -27,6 +27,7 @@ const PORT=process.env.PORT ||5000;
 
 const allowedOrigins = [
     'http://localhost:5173',
+    'https://ecommerce-mern-8.onrender.com',
     'https://ecommerce-mern-7-rixe.onrender.com'
 ];
 
