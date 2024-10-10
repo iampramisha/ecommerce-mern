@@ -173,7 +173,7 @@
 // import { Button } from '../ui/button';
 // import { useNavigate } from 'react-router-dom';
 
-// const CartItemsContent = ({ items,
+// const Content = ({ items,
 //     showCheckOutButton }) => {
 //     console.log("cartitemscontent,,", items);
 //     const dispatch = useDispatch();
