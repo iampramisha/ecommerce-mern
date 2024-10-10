@@ -32,6 +32,7 @@ export const loginUser=createAsyncThunk('/auth/login',
     }
 )
 export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+<<<<<<< HEAD
   try {
     // Make the API call to log out, ensuring credentials are included
     const response = await axios.post(
@@ -45,6 +46,16 @@ export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWith
     return rejectWithValue(error.response?.data || { message: 'Logout failed' });
   }
 });
+=======
+    try {
+      // Make the API call to log out
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  });
+>>>>>>> e367c762c469855414863c4a57fd7cf888d820d4
 
 export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
     try {

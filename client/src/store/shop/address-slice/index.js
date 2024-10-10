@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Define the API endpoint
-const API_URL = 'http://localhost:5000/api/shop/address';
 
 // Async thunk for adding an address
  export const addAddress = createAsyncThunk(
