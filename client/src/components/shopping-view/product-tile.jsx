@@ -94,7 +94,7 @@ console.log("itemsxxzz",items);
             Add to cart
         </Button>
     ) : (
-        <Button className="w-full bg bg-gray-500 color-black" onClick={handleAddToCart}>
+        <Button className="w-full bg bg-gray-500 color-black disabled" onClick={handleAddToCart} disabled>
    Out of stock
     </Button>
     )}

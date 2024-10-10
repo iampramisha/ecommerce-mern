@@ -6,7 +6,7 @@ export const addProduct = createAsyncThunk(
   'products/addProduct',
   async (productData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/products/create', productData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/products/create`, productData);
       return response.data; // Return the data if successful
     } catch (error) {
       return rejectWithValue(error.response.data); // Return the error data if there's an issue
@@ -20,7 +20,7 @@ export const updateProduct = createAsyncThunk(
   async ({ id, productData }, { rejectWithValue }) => {
     console.log("product",productData)
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/products/update/${id}`, productData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/products/update/${id}`, productData);
 
       console.log("Full response", response);
 
@@ -37,7 +37,7 @@ export const fetchProductById = createAsyncThunk(
   'products/fetchProductById',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/admin/products/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/products/${id}`);
       return response.data; // Return the data if successful
     } catch (error) {
       return rejectWithValue(error.response.data); // Return the error data if there's an issue
@@ -49,7 +49,7 @@ export const fetchProducts = createAsyncThunk(
     'products/fetchProducts',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/products/list');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/products/list`);
         return response.data; // Return the list of products if successful
       } catch (error) {
         return rejectWithValue(error.response.data); // Return the error data if there's an issue
@@ -62,7 +62,7 @@ export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/admin/products/delete/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/products/delete/${id}`);
       return { id }; // Return the ID of the deleted product
     } catch (error) {
       return rejectWithValue(error.response.data); // Return the error data if there's an issue

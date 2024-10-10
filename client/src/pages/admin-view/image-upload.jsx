@@ -443,7 +443,7 @@ export default function ProductsImageUpload({
     setIsLoading(true); // Set loading to true before upload
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/products/upload-image', data);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`, data);
       console.log(response.data); // Ensure this is printing the expected response
       if (response.data.success) {
         setUploadedImageUrl(response.data.result.url); // Adjust according to your backend response structure

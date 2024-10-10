@@ -8,11 +8,13 @@ import { resetOrders } from '@/store/shop/order-slice'
 export default function AdminHeader({ setOpen }) {
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    // Optionally, handle redirection or UI updates after dispatch
-    dispatch(resetOrders());
+  const handleLogout = async () => {
+    await dispatch(logoutUser()); // Log the user out
+    dispatch(resetOrders()); // Reset any relevant orders
+    await dispatch(checkAuth()); // Verify the logout on the backend
+    navigate('/auth/login'); // Redirect to login after logout
   };
+
 
   return (
     <header className='flex items-center justify-between px-4 py-3 bg-background border-bottom '>

@@ -14,7 +14,7 @@ const initialState={
 export const registerUser=createAsyncThunk('/auth/register',
     //username,email,password
     async(formData)=>{
-        const response=await axios.post('http://localhost:5000/api/auth/register',formData,{
+        const response=await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`,formData,{
             withCredentials:true
         });
         return response.data;
@@ -25,25 +25,30 @@ export const registerUser=createAsyncThunk('/auth/register',
 export const loginUser=createAsyncThunk('/auth/login',
     //username,email,password
     async(formData)=>{
-        const response=await axios.post('http://localhost:5000/api/auth/login',formData,{
+        const response=await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`,formData,{
             withCredentials:true
         });
         return response.data;
     }
 )
 export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
-    try {
-      // Make the API call to log out
-      const response = await axios.post('http://localhost:5000/api/auth/logout');
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  });
+  try {
+    // Make the API call to log out, ensuring credentials are included
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+      {}, // Empty object for body since logout typically doesn't require any payload
+      { withCredentials: true } // Include cookies with the request
+    );
+    return response.data;
+  } catch (error) {
+    // Handle errors by rejecting with the error response
+    return rejectWithValue(error.response?.data || { message: 'Logout failed' });
+  }
+});
 
 export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
     try {
-        const response = await axios.get('http://localhost:5000/api/auth/check-auth', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/check-auth`, {
             withCredentials: true,
             headers: {
                 'Cache-Control': 'no-store, no-cache',
@@ -51,6 +56,8 @@ export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
                 'Expires': '0'
             }
         });
+        localStorage.removeItem('token'); // If using token
+        sessionStorage.removeItem('user'); // If storing user data
         return response.data;
     } catch (error) {
         // Handle errors here if needed
@@ -127,11 +134,11 @@ const authSlice=createSlice({
                state.errorMessage = action.error.message; // Store error message
                state.user = null;
                state.isAuthenticated = false;
-             }).addCase(logoutUser.fulfilled, (state) => {
-                state.user = null;
-                state.isAuthenticated = false;
-                // Optionally, you can clear any other session-related state here
-              });
+             }) .addCase(logoutUser.fulfilled, (state, action) => {
+              state.isLoading = false;
+              state.user = null;
+              state.isAuthenticated = false;
+            });
         
         }
     }

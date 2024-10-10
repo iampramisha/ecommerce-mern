@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AuthLayout from './components/auth/layout'
 import AuthRegister from './pages/auth/register'
 import AuthLogin from './pages/auth/login'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminDashboard from './pages/admin-view/dashboard'
 import AdminFeatures from './pages/admin-view/features'
 import AdminOrders from './pages/admin-view/orders'
@@ -21,7 +21,6 @@ import { checkAuth } from './store/auth-slice'
 import { Skeleton } from "@/components/ui/skeleton"
 import PaypalReturn from './pages/shopping-view/paypal-return'
 import PaymentSuccessPage from './pages/shopping-view/paypal-cancel'
-
 export default function App() {
 
   const {user,isAuthenticated,isLoading}=useSelector(state=> state.auth);
@@ -42,6 +41,8 @@ export default function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       {/* <h1>header</h1> */}
       <Routes>
+      <Route path="/" element={<Navigate to={isAuthenticated ? "/shop/home" : "/auth/login"} />} />
+
         {/* Authentication routes */}
         <Route path='/auth' element={<AuthLayout />}>
           <Route path='login' element={

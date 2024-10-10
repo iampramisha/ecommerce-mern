@@ -143,7 +143,7 @@ import { Button } from '../ui/button';
 import { shoppingViewHeaderMenuItems } from '@/config';
 import CartWrapper from './cart-wrapper';
 import { fetchCartItems } from '@/store/shop/cart-slice';
-import { logoutUser } from '@/store/auth-slice';
+import { checkAuth, logoutUser } from '@/store/auth-slice';
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react';
@@ -171,28 +171,72 @@ function ShoppingViewHeader() {
   //   }
   // }, [status]);
 
-  function handleLogout() {
-    dispatch(logoutUser());
-    sessionStorage.removeItem("filters");
-    navigate('/auth/login');
-  }
+  // function handleLogout() {
+  //   dispatch(logoutUser());
+  //   sessionStorage.removeItem("filters");
+  //   navigate('/auth/login');
+  // }
+  // function handleNavigate(getCurrentMenuItem, section) {
+  //   sessionStorage.removeItem("filters"); // Clear previous filters first
+    
+  //   let currentFilter = null;
+  
+  //   // If the menu item is not 'home', set the category filter
+  //   if (getCurrentMenuItem.id !== 'home'  && getCurrentMenuItem.id !== 'products') {
+  //     currentFilter = {
+  //       category: [getCurrentMenuItem.id]
+  //     };
+  //     sessionStorage.setItem('filters', JSON.stringify(currentFilter)); // Store the filter
+  //   }
+  
+  //   // Navigate to the desired path
+  //   navigate(getCurrentMenuItem.path);
+  // }
+  const handleLogout = async () => {
+    await dispatch(logoutUser()); // Ensure logout completes
+
+    sessionStorage.removeItem("filters"); // Clear filters
+    localStorage.removeItem("token");
+    navigate('/auth/login'); // Redirect to login page
+  };
   function handleNavigate(getCurrentMenuItem, section) {
     sessionStorage.removeItem("filters"); // Clear previous filters first
-    
+// window.reload();
     let currentFilter = null;
-  
+
     // If the menu item is not 'home', set the category filter
-    if (getCurrentMenuItem.id !== 'home'  && getCurrentMenuItem.id !== 'products') {
+   
+      if (getCurrentMenuItem.id !== 'home'  && getCurrentMenuItem.id !== 'products') {
       currentFilter = {
         category: [getCurrentMenuItem.id]
       };
       sessionStorage.setItem('filters', JSON.stringify(currentFilter)); // Store the filter
     }
-  
-    // Navigate to the desired path
-    navigate(getCurrentMenuItem.path);
-  }
-  
+        navigate(getCurrentMenuItem.path);
+        window.location.reload();
+}
+  // function handleLogout() {
+  //   dispatch(logoutUser());
+  //   sessionStorage.removeItem("filters");
+  //   navigate('/auth/login');
+  // }
+  // function handleNavigate(getCurrentMenuItem, section) {
+  //   sessionStorage.removeItem("filters"); // Clear previous filters first
+
+  //   let currentFilter = null;
+
+  //   // If the menu item is not 'home', set the category filter
+  //   if (getCurrentMenuItem.id !== 'home'  && getCurrentMenuItem.id !== 'products') {
+  //     currentFilter = {
+  //       category: [getCurrentMenuItem.id]
+  //     };
+  //     sessionStorage.setItem('filters', JSON.stringify(currentFilter)); // Store the filter
+  //   }
+
+  //   // Navigate to the desired path
+  //   navigate(getCurrentMenuItem.path);
+  // }
+
   function HeaderRightContent() {
     return (
       <div className='flex flex-row lg:items-center lg:flex-row  gap-4'>
