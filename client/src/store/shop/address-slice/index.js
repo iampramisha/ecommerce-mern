@@ -2,14 +2,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Define the API endpoint
-const API_URL = 'http://localhost:5000/api/shop/address';
 
 // Async thunk for adding an address
  export const addAddress = createAsyncThunk(
   'addresses/addAddress',
   async ({userId,addressData}, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/shop/address/',{ userId,...addressData});
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/address/`,{ userId,...addressData});
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -22,7 +21,7 @@ export const fetchAddresses = createAsyncThunk(
   'addresses/fetchAddresses',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/shop/address/${userId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/address/${userId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -35,7 +34,7 @@ export const fetchAddressById = createAsyncThunk(
   'addresses/fetchAddressById',
   async ({ userId, addressId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/${userId}/${addressId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/${userId}/${addressId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -48,7 +47,7 @@ export const updateAddress = createAsyncThunk(
   'addresses/updateAddress',
   async ({ userId, addressId, updateData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${API_URL}/${userId}/${addressId}`, updateData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/shop/${userId}/${addressId}`, updateData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -60,7 +59,7 @@ export const updateAddress = createAsyncThunk(
 export const deleteAddress = createAsyncThunk(
     'address/deleteAddress',
     async ({ userId, addressId }) => {
-      await axios.delete(`http://localhost:5000/api/shop/address/${userId}/${addressId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/shop/address/${userId}/${addressId}`, {
         data: { userId }, // Include userId in the request
       });
       return { id: addressId }; // Return the ID of the deleted address

@@ -14,7 +14,7 @@ const initialState={
 export const registerUser=createAsyncThunk('/auth/register',
     //username,email,password
     async(formData)=>{
-        const response=await axios.post('http://localhost:5000/api/auth/register',formData,{
+        const response=await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`,formData,{
             withCredentials:true
         });
         return response.data;
@@ -25,7 +25,7 @@ export const registerUser=createAsyncThunk('/auth/register',
 export const loginUser=createAsyncThunk('/auth/login',
     //username,email,password
     async(formData)=>{
-        const response=await axios.post('http://localhost:5000/api/auth/login',formData,{
+        const response=await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`,formData,{
             withCredentials:true
         });
         return response.data;
@@ -34,7 +34,7 @@ export const loginUser=createAsyncThunk('/auth/login',
 export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
     try {
       // Make the API call to log out
-      const response = await axios.post('http://localhost:5000/api/auth/logout');
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/logout`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -43,7 +43,7 @@ export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWith
 
 export const checkAuth = createAsyncThunk('/auth/checkauth', async () => {
     try {
-        const response = await axios.get('http://localhost:5000/api/auth/check-auth', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/check-auth`, {
             withCredentials: true,
             headers: {
                 'Cache-Control': 'no-store, no-cache',

@@ -63,7 +63,7 @@ import axios from 'axios';
 
 // Async thunk to create an order
 export const createOrder = createAsyncThunk('order/createOrder', async ({ items, userId, addressInfo, total }) => {
-    const response = await axios.post("http://localhost:5000/api/shop/order/createOrder", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/order/createOrder`, {
         items,
         userId,
      
@@ -75,7 +75,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ items,
 
 // Async thunk to capture payment
 export const capturePayment = createAsyncThunk('order/capturePayment', async ({ paymentId, payerId, orderId }) => {
-    const response = await axios.post('http://localhost:5000/api/shop/order/capturePayment', {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/shop/order/capturePayment`, {
         paymentId,
         payerId,
         orderId,
@@ -86,7 +86,7 @@ export const capturePayment = createAsyncThunk('order/capturePayment', async ({ 
 // Async thunk to fetch all orders
 export const fetchOrders = createAsyncThunk('order/fetchOrders', async (userId) => {
     // Using query parameters instead of URL segments
-    const response = await axios.get(`http://localhost:5000/api/shop/order/`, {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/`, {
         params: { userId } // Send userId as a query parameter
     });
 
@@ -96,7 +96,7 @@ export const fetchOrders = createAsyncThunk('order/fetchOrders', async (userId) 
   
 // Async thunk to fetch a specific order by ID
 export const fetchOrderById = createAsyncThunk('order/fetchOrderById', async (orderId) => {
-    const response = await axios.get(`http://localhost:5000/api/shop/order/${orderId}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/${orderId}`);
     return response.data; // Return fetched order
 });
 

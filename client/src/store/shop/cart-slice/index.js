@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/api/shop/carts';
+const BASE_URL = `${imp.meta.env.VITE_API_URL}/api/shop/carts`;
 
 // Async thunks for handling API calls
 
@@ -32,7 +32,7 @@ export const addToCart = createAsyncThunk(
     'cart/fetchCartItems',
     async (userId, { rejectWithValue }) => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/shop/carts/get/${userId}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/carts/get/${userId}`);
         return response.data; // Assuming your API returns the cart data in a consistent format
     } catch (error) {
       return rejectWithValue(error.response.data); // Handle error response
@@ -58,7 +58,7 @@ export const removeFromCart = createAsyncThunk(
   'cart/removeFromCart',
   async ({ userId, productId }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/shop/carts/${userId}/${productId}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/shop/carts/${userId}/${productId}`);
       return response; // Return the data from API
     } catch (error) {
       return rejectWithValue(error.response);
