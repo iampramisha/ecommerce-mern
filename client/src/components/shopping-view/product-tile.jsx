@@ -76,17 +76,17 @@ console.log("itemsxxzz",items);
 </div>
 <div className='flex justify-between items-center mb-2'>
 
-<span className=' text-sm font-semibold text-primary text-muted-foreground'>
+<span className={`${product?.salePrice > 0 ? 'line-through': ''} text-sm font-semibold text-primary text-muted-foreground`}>
 {product?.price}
 </span>
-<span className={`${product?.salePrice > 0 ? 'line-through': ''} text-sm font-semibold tetx-primary text-muted-foreground`}>
+
 {product?.salePrice > 0 ? 
 <span className=' text-sm font-semibold text-primary text-muted-foreground'>
 {product?.salePrice}
 </span>
 :null}
 
-</span>
+
 </div>
 </CardContent>
 <CardFooter>
