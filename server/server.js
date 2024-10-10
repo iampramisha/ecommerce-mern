@@ -33,13 +33,14 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) {
-            callback(null, true); // Allow the request if the origin is in the list or if it's undefined (for server-side requests)
+        // Allow requests with no origin (like server-side or mobile apps) or if origin is in allowedOrigins
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS')); // Block the request if the origin is not allowed
+            callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],  // Include OPTIONS method
     allowedHeaders: [
         "Content-Type",
         'Authorization',
@@ -47,7 +48,27 @@ app.use(cors({
         'Expires',
         'Pragma'
     ],
-    credentials: true // Allow cookies to be sent with the request
+    credentials: true // Allow credentials (cookies) to be sent
+}));
+
+// Handle preflight requests manually
+app.options('*', cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
+    allowedHeaders: [
+        "Content-Type",
+        'Authorization',
+        'Cache-control',
+        'Expires',
+        'Pragma'
+    ],
+    credentials: true
 }));
 
 
