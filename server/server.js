@@ -24,20 +24,35 @@ mongoose.connect(process.env.DATABASE_URL)
 //   .catch((err) => console.error('Failed to connect to MongoDB', err));
 const app=express();
 const PORT=process.env.PORT ||5000;
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://ecommerce-mern-7-rixe.onrender.com'
+];
+
 app.use(cors({
-    //client side
-    origin:process.env.CLIENT_BASE_URL,
-    //methods to use
-    methods:['GET','POST','DELETE','PUT'],
-    allowedHeaders:[
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true); // Allow the request if the origin is in the list or if it's undefined (for server-side requests)
+        } else {
+            callback(new Error('Not allowed by CORS')); // Block the request if the origin is not allowed
+        }
+    },
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: [
         "Content-Type",
         'Authorization',
         'Cache-control',
         'Expires',
         'Pragma'
     ],
-    credentials:true
-}))
+    credentials: true // Allow cookies to be sent with the request
+}));
+
+
+
+
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
