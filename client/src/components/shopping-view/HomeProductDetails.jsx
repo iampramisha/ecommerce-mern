@@ -4,14 +4,10 @@ import {
     Dialog,
     DialogPortal,
     DialogOverlay,
-    DialogClose,
-    DialogTrigger,
+
     DialogContent,
-    DialogHeader,
-    DialogFooter,
-    DialogTitle,
-    DialogDescription,
-  } from '@/components/ui/Dialog'; 
+
+  } from '@/components/ui/dialog'; 
   import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
 import { Button } from '@/components/ui/Button'; // Adjust import path if necessary
 

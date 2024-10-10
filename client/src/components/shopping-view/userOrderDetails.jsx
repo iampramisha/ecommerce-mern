@@ -78,10 +78,11 @@
 // };
 
 // export default UserOrderDetailsDialog;
+
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderById } from '@/store/shop/order-slice'; // Import the thunk for fetching order details
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog,  DialogTitle,DialogContent, DialogHeader } from '@/components/ui/dialog';
 
 const UserOrderDetailsDialog = ({ open, onClose, orderId }) => {
   const dispatch = useDispatch();
