@@ -8,17 +8,49 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-
 import HomeProductDetails from '@/components/shopping-view/HomeProductDetails';
+import { addToCart } from '@/store/shop/cart-slice';
+import { useToast } from '@/hooks/use-toast';
+
 export default function ShoppingHome() {
   const dispatch = useDispatch();
   const { productList, isLoading, error } = useSelector((state) => state.shopProducts);
   const navigate = useNavigate(); // React Router hook to handle navigation
   const [isDialogOpen, setDialogOpen] = useState(false); // Track whether the dialog is open
   const [selectedProduct, setSelectedProduct] = useState(null); 
+  
+      const { user } = useSelector((state) => state.auth);
+  const {toast}=useToast();
   useEffect(() => {
     dispatch(fetchAllProducts()); // Dispatch the action to fetch all products
   }, [dispatch]);
+   const { items } = useSelector((state) => state.cart);
+   const userId=user.id;
+    const handleAddToCart = (e,product) => {
+        e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
+console.log("itemsxxzz",items);
+        // Find the current quantity of this product in the cart
+        const currentItem = items.find(item => item.productId === product._id);
+        const currentQuantity = currentItem ? currentItem.quantity : 0;
+
+        // Check if adding more than available stock
+        if (currentQuantity + 1 > product.totalStock) {
+            toast({
+                variant:"destructive",
+                title: `Stock Limit Reached`,
+                description: `Cannot add more than ${product.totalStock} items to the cart.`,
+                status: 'error',
+            });
+        } else {
+            dispatch(addToCart({ userId, productId: product._id, quantity: 1, weight: product.weight }));
+            toast({
+                
+                title: 'Success',
+                description: 'Item added to cart',
+                status: 'success',
+            });
+        }
+    };
 
   const images = [
     {
@@ -223,8 +255,16 @@ export default function ShoppingHome() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full">Add to cart</Button>
-              </CardFooter>
+                {product?.totalStock > 0 ? (
+                    <Button className="w-full" onClick={(e) => handleAddToCart(e, product)}>
+                        Add to cart
+                    </Button>
+                ) : (
+                    <Button className="w-full bg-gray-500 text-black disabled" disabled>
+                        Out of stock
+                    </Button>
+                )}
+            </CardFooter>
             </Card>
           ))}
         </div>

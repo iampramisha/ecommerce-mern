@@ -19,30 +19,38 @@ import { useToast } from '@/hooks/use-toast'
     const userId=user.id;
     const handleAddToCart = (e) => {
         e.stopPropagation(); // Prevent triggering `handleGetProductDetails` when clicking "Add to Cart"
-console.log("itemsxxzz",items);
+        console.log("itemsxxzz", items);
+    
         // Find the current quantity of this product in the cart
         const currentItem = items.find(item => item.productId === product._id);
         const currentQuantity = currentItem ? currentItem.quantity : 0;
-
+    
         // Check if adding more than available stock
         if (currentQuantity + 1 > product.totalStock) {
             toast({
-                variant:"destructive",
+                variant: "destructive",
                 title: `Stock Limit Reached`,
                 description: `Cannot add more than ${product.totalStock} items to the cart.`,
                 status: 'error',
             });
         } else {
-            dispatch(addToCart({ userId, productId: product._id, quantity: 1, weight: product.weight }));
+            // Dispatch addToCart action with totalStock passed as part of the payload
+            dispatch(addToCart({ 
+                userId, 
+                productId: product._id, 
+                quantity: 1, 
+                weight: product.weight,
+                totalStock: product.totalStock  // Pass totalStock here
+            }));
+            
             toast({
-                
                 title: 'Success',
                 description: 'Item added to cart',
                 status: 'success',
             });
         }
     };
-
+    
     
     return (
   

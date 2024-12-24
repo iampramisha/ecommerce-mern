@@ -446,10 +446,14 @@ const CartItemsContent = ({ items, showCheckOutButton }) => {
                 await dispatch(updateCartItemQty({ userId, productId, quantity })).unwrap();
                 await dispatch(fetchCartItems(userId)).unwrap();
                 toast({ title: 'Quantity updated successfully!' }); // Show toast on success
-            } catch (error) {
-                console.error('Error updating cart item quantity:', error);
-                toast({ title: 'Failed to update quantity.', variant: 'destructive' }); // Show toast on error
-            }
+              }  catch (error) {
+                    console.error('Error updating cart item quantity:', error);
+        
+                    // Extract the error message, if available
+                    const errorMessage = error.message || 'Something went wrong!';
+        
+                    toast({ title: errorMessage, variant: 'destructive' }); // Show toast on error
+                }
         }
     };
 
