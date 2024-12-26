@@ -431,6 +431,7 @@ const CartItemsContent = ({ items, showCheckOutButton }) => {
     useEffect(() => {
         console.log('Cart items updated:', items);
     }, [items]);
+   
 
     const validItems = Array.isArray(items) ? items : [];
 

@@ -271,9 +271,10 @@ const cartSlice = createSlice({
       })
       .addCase(updateCartItemQty.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.items = action.payload || [];
+        state.items = action.payload.items || [];  // Ensure that `action.payload.items` exists
         saveCartToLocalStorage(state.items); // Persist cart in localStorage
       })
+      
       .addCase(updateCartItemQty.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload?.message || action.payload;
